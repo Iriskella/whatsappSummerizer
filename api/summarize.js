@@ -1,5 +1,12 @@
-
 export default async function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -23,17 +30,18 @@ ${messages.join("\n")}
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${OPENAI_API_KEY}`
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
         model: "gpt-4",
         messages: [{ role: "user", content: prompt }],
-        temperature: 0.5
-      })
+        temperature: 0.5,
+      }),
     });
 
     const data = await response.json();
-    const summary = data.choices?.[0]?.message?.content ?? "No summary generated.";
+    const summary =
+      data.choices?.[0]?.message?.content ?? "No summary generated.";
     res.status(200).json({ summary });
   } catch (error) {
     console.error("Error:", error);
