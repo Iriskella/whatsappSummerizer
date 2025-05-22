@@ -1,12 +1,15 @@
 export default async function handler(req, res) {
+  // Always set CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+  // Handle preflight
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
+  // Only allow POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -18,7 +21,6 @@ export default async function handler(req, res) {
   }
 
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-
   const prompt = `
 Summarize the following WhatsApp messages in short bullet points. Focus on key ideas and action items:
 
@@ -40,11 +42,18 @@ ${messages.join("\n")}
     });
 
     const data = await response.json();
+
     const summary =
       data.choices?.[0]?.message?.content ?? "No summary generated.";
-    res.status(200).json({ summary });
+
+    // ✅ CORS header on successful response
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    return res.status(200).json({ summary });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ error: "Internal server error" });
+
+    // ✅ CORS header on error too
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    return res.status(500).json({ error: "Internal server error" });
   }
 }
