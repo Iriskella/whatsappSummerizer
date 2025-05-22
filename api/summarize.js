@@ -1,10 +1,9 @@
 export default async function handler(req, res) {
-  // ✅ Handle CORS headers on every request
+  // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // ✅ Respond to preflight requests
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
@@ -20,6 +19,7 @@ export default async function handler(req, res) {
   }
 
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
   const prompt = `
 Summarize the following WhatsApp messages in short bullet points. Focus on key ideas and action items:
 
@@ -44,14 +44,19 @@ ${messages.join("\n")}
     const summary =
       data.choices?.[0]?.message?.content ?? "No summary generated.";
 
-    // ✅ Include CORS headers in final response
     res.setHeader("Access-Control-Allow-Origin", "*");
     return res.status(200).json({ summary });
   } catch (error) {
     console.error("Error:", error);
-
-    // ✅ Include CORS headers even in error
     res.setHeader("Access-Control-Allow-Origin", "*");
     return res.status(500).json({ error: "Internal server error" });
   }
 }
+
+// ✅ This makes sure OPTIONS requests are not dropped
+export const config = {
+  api: {
+    bodyParser: true,
+    externalResolver: true,
+  },
+};
