@@ -1,15 +1,14 @@
 export default async function handler(req, res) {
-  // Always set CORS headers
+  // ✅ Handle CORS headers on every request
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  // Handle preflight
+  // ✅ Respond to preflight requests
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
-  // Only allow POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -42,17 +41,16 @@ ${messages.join("\n")}
     });
 
     const data = await response.json();
-
     const summary =
       data.choices?.[0]?.message?.content ?? "No summary generated.";
 
-    // ✅ CORS header on successful response
+    // ✅ Include CORS headers in final response
     res.setHeader("Access-Control-Allow-Origin", "*");
     return res.status(200).json({ summary });
   } catch (error) {
     console.error("Error:", error);
 
-    // ✅ CORS header on error too
+    // ✅ Include CORS headers even in error
     res.setHeader("Access-Control-Allow-Origin", "*");
     return res.status(500).json({ error: "Internal server error" });
   }
