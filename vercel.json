@@ -1,7 +1,4 @@
-
 {
   "version": 2,
-  "builds": [
-    { "src": "api/summarize.js", "use": "@vercel/node" }
-  ]
+  "builds": [{ "src": "pages/api/summarize.js", "use": "@vercel/node" }]
 }
