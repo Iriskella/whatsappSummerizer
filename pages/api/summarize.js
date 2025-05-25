@@ -43,6 +43,8 @@ ${messages.join("\n")}
     });
 
     const data = await response.json();
+    console.log("🔍 OpenAI raw response:", data); // ✅ Add this
+
     const summary =
       data.choices?.[0]?.message?.content ?? "No summary generated.";
 
