@@ -1,0 +1,29 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Build output
+.next/
+out/
+dist/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Vercel
+.vercel
+
+# OS + Editor
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+.env
+.env.local
+.env.*.local
